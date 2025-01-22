@@ -13,17 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v2
-
-    - name: Stop running containers
-      run: docker-compose down || true
-
-    - name: Pull latest changes
-      run: git pull
-
-    - name: Build Docker images
-      run: docker-compose build
-
-    - name: Start Docker containers
-      run: docker-compose up -d
+    - name: Deploy to a
+      run: |
+        ssh -o StrictHostKeyChecking=no root@80.78.242.151 << 'EOF'
+        cd /path/to/your/project
+        docker-compose down || true
+        git pull
+        docker-compose build
+        docker-compose up -d
+        EOF
