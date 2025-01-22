@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install gd && \
     docker-php-ext-install zip && \
     docker-php-ext-install exif && \
-    docker-php-ext-install mysqli && \  
+    docker-php-ext-install mysqli && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
