@@ -1,23 +1,28 @@
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y \
+# Установка зависимостей и расширений PHP
+RUN apt-get update -o Acquire::http::Pipeline-Depth=200 && apt-get install -y --no-install-recommends \
     apt-utils \
     libpq-dev \
     libpng-dev \
     libzip-dev \
-    zip unzip \
+    zip \
+    unzip \
     git && \
-    docker-php-ext-install pdo_mysql && \
-    docker-php-ext-install bcmath && \
-    docker-php-ext-install gd && \
-    docker-php-ext-install zip && \
-    docker-php-ext-install exif && \
-    docker-php-ext-install mysqli && \
+    docker-php-ext-install \
+        pdo_mysql \
+        bcmath \
+        gd \
+        zip \
+        exif \
+        mysqli && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+    
 # Копирование кастомного php.ini
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
+# Установка рабочего каталога
 WORKDIR /var/www
+
 
