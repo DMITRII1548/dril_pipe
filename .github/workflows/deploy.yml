@@ -19,8 +19,7 @@ jobs:
           private_key: ${{secrets.SSH_PRIVATE_KEY}}
           command: |
             cd /www;
-            git checkout main;
-            git pull;
             docker compose down;
+            git pull;
             docker compose build;
             docker compose up -d
