@@ -22,7 +22,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             set -e
-            cd /path/to/your/project
+            cd /www
             docker-compose down
             git pull origin main
             docker-compose build
