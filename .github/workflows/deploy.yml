@@ -1,24 +1,30 @@
-name: Deploy PHP App
+name: Deploy PHP Service
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    environment: production
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
 
-    - name: Deploy to a
-      run: |
-        ssh -o StrictHostKeyChecking=no root@80.78.242.151 << 'EOF'
-        cd /path/to/your/project
-        docker-compose down || true
-        git pull
-        docker-compose build
-        docker-compose up -d
-        EOF
+      - name: Install SSH keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+
+      - name: Deploy application
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            set -e
+            cd /path/to/your/project
+            docker-compose down
+            git pull origin main
+            docker-compose build
+            docker-compose up -d
+          EOF
