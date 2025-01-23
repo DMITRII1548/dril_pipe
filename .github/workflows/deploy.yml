@@ -16,10 +16,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Debug SSH Connection
-        run: |
-          ssh -o StrictHostKeyChecking=no -o BatchMode=yes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} echo "SSH connection successful"
-
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
         with:
