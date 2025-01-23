@@ -5,34 +5,18 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
-    environment: production
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Install SSH keys
-        run: |
-          mkdir -p ~/.ssh
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4.1.1
+      - name: Run command on remote server
+        uses: D3rHase/ssh-command-action@v0.2.2
         with:
-          fetch-depth: 0
-
-      - name: Deploy Application
-        run: |
-          ssh -o StrictHostKeyChecking=no -o BatchMode=yes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
-            cd /www
-            echo "Stopping existing containers..."
-            docker-compose down
-            echo "Pulling latest changes from repository..."
-            git pull origin main
-            echo "Building new containers..."
-            docker-compose build
-            echo "Starting containers..."
-            docker-compose up -d
-            echo "Deployment completed successfully!"
-          EOF
+          host: ${{secrets.SSH_HOST}}
+          user: ${{secrets.SSH_USER}}
+          private_key: ${{secrets.SSH_PRIVATE_KEY}}
+          command: |
+            cd /www;
+            git checkout main;
+            git pull;
+            docker compose down;
+            docker compose build;
+            docker compose up -d
