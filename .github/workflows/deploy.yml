@@ -9,13 +9,13 @@ jobs:
     environment: production
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
-        
       - name: Debug SSH
         run: |
           ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-
+          
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        
       - name: Install SSH keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
